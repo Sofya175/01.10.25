@@ -2,6 +2,13 @@
 # Не импортируем то, чем не пользуемся
 from random import choice, choices, shuffle
 
+# random.choice - cлучайный выбор одного элемента
+# random.choices - cлучайный выбор из списка с повторами
+# random.shuffle - cлучайный выбор без повтора
+# random.random.randint(a, b) - возвращает случайное целое число из диапазона [a, b],
+# где a и b — обе границы включаются
+# random.randrange(start, stop, step) - возвращает случайное целое число из заданного диапазона
+# [start, stop), с учетом шага step.
 
 # Ctrl + Alt + O - оптимизировать импорт
 
