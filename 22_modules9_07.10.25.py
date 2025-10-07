@@ -30,9 +30,10 @@ for row, (item, price) in enumerate(data):
     worksheet.write(row, 0, item)
     worksheet.write(row, 1, price)
 
-row += 1
+row = row + 1
 
 worksheet.write(row, 0, 'Итого:')
 worksheet.write(row, 1, f'=SUM(B1:B{row})')
 
 workbook.close()
+

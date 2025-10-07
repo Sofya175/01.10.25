@@ -1,12 +1,11 @@
 # Собственные модули
 # Их создание и подключение
-# Подключаем нужную функцию из пакета из модуля my_package
+# Подключаем нужную функцию из пакета модуля my_package
+from my_package import hello, goodbye
 
-import my_package
-#from my_package import module_1
+hello()
+goodbye()
 
-my_package.hello()
-my_package.goodbye()
 
 
 
