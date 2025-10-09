@@ -115,13 +115,13 @@ for person in persons:
     else:
         print(person.about_person())
 
-for person in persons:
-    if isinstance(person, Student):
-        print(person.__class__)
-    elif isinstance(person, Employee):
-        print(person.__class__)
-    else:
-        print(person.__class__)
+# for person in persons:
+#     if isinstance(person, Student):
+#         print(person.__class__)
+#     elif isinstance(person, Employee):
+#         print(person.__class__)
+#     else:
+#         print(person.__class__)
 
 # for person in persons:
 #     if isinstance(person, Student):
