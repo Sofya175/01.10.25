@@ -1,2 +1,3 @@
 стол : table
 стул : chair
+яблоко : apple

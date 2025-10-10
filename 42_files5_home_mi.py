@@ -8,7 +8,7 @@ d = {
     'стул': 'chair'
 }
 
-f = open('./files/info.txt', 'wt', encoding='utf8')  # файловый объект
+f = open('./files/info.txt', 'wt', encoding='utf-8')  # файловый объект
 
 for k, v in d.items():
     print(f'{k} : {v}', file=f)
