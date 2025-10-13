@@ -28,10 +28,10 @@ result = re.findall(pattern, test_string)
 print(result)
 
 
-# pattern = 'Go{,2}gle'
-#
-# test_string = 'Gogle, Google, Gooogle'
-#
-# result = re.findall(pattern, test_string)
-#
-# print(result)
+pattern = 'Go{,2}gle'
+
+test_string = 'Gogle, Google, Gooogle'
+
+result = re.findall(pattern, test_string)
+
+print(result)

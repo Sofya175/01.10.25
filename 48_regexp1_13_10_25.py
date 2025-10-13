@@ -21,30 +21,30 @@ result = re.findall(pattern, test_string)
 print(result)
 
 
-# pattern = '[^те]'
-#
-# test_string = 'Телевизор и сеть и антенна'
-#
-# result = re.findall(pattern, test_string, re.IGNORECASE)
-#
-# print(result)
+pattern = '[^те]'
 
-# заканчивается ли строка на искомую последовательность
-# pattern = r'сначала\Z'
-#
-# test_string = 'эта песня хороша, начинай сначала'
+test_string = 'Телевизор и сеть и антенна'
 
-# result = re.search(pattern, test_string)
-#
-# print(result.group())
+result = re.findall(pattern, test_string, re.IGNORECASE)
+
+print(result)
+
+#заканчивается ли строка на искомую последовательность
+pattern = r'сначала\Z'
+
+test_string = 'эта песня хороша, начинай сначала'
+
+result = re.search(pattern, test_string)
+
+print(result.group())
 
 # Найти три подряд идущие цифры
-# pattern = r'\d{3}'
-# test_string = 'Для записи в МФЦ звоните 122, но не 112'
-#
-# result = re.findall(pattern, test_string)
-#
-# print(result)
+pattern = r'\d{3}'
+test_string = 'Для записи в МФЦ звоните 122, но не 112'
+
+result = re.findall(pattern, test_string)
+
+print(result)
 
 # pattern = r'\d'  # только цифры
 # test_string = 'Для экстренных вызовов звоните 112'
@@ -53,7 +53,7 @@ print(result)
 #
 # print('Цифры есть') if result else print('Цифр нет')
 
-# pattern = r'\b\w{4}\b'  # raw string, все слова из 4-х букв
-# test_string = 'Мама мыла раму, а папа был на пилораме'
-#
-# result = re.findall(pattern, test_string)
+pattern = r'\b\w{4}\b'  # raw string, все слова из 4-х букв
+test_string = 'Мама мыла раму, а папа был на пилораме'
+
+result = re.findall(pattern, test_string)
