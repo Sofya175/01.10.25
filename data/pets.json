@@ -1,0 +1,17 @@
+{
+'pets'[
+    {
+      "type": "Cat",
+      "name": "Kitty",
+      "age": 7,
+      "food": ["Wiskas",
+        "Hills"]
+    },
+    {
+      "type": "Cat",
+      "name": "Kitty",
+      "age": 7,
+      "food": ["Wiskas"]
+   }
+]
+}
