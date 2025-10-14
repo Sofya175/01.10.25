@@ -1,14 +1,30 @@
 <!--DOM - Document Ob-->
 
+<!--<!DOCTYPE html>-->
+<!--<html lang="ru">-->
+<!--<head>-->
+<!--    как будет отображаться на странице-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Жанры</title>-->
+<!--    <link rel="stylesheet" href="{url_for('static', filename="css/styles.css")}">-->
+<!--</head>-->
+<!--<body>-->
+<!--что будет отображаться на странице-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    как будет отображаться на странице
+<!--    как будет отображаться на странице-->
     <meta charset="UTF-8">
-    <title>Жанры</title>
-    <link rel="stylesheet" href="{url_for('static', filename="css/styles.css")}">
+    <meta name="description" content="Описание страницы сайта.">
+    <link rel="stylesheet" href="{url_for('static', filename='css/styles.css')}">
+    <title>Приветствуем тебя, {name}</title>
 </head>
 <body>
-что будет отображаться на странице
+<!--    что будет отображаться на странице-->
+<h1>{name.capitalize()}, мы приветствуем тебя</h1>
 </body>
 </html>
+    """
