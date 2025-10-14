@@ -74,3 +74,9 @@ crud = CrudTest('db/books_bd.sqlite')
 
 # print(crud.read_all('books'))
 crud.delete_genre('Для детей')
+
+# GET - запрос (аналог READ)
+# GET запрос
+# https://static-maps.yandex.ru/1.x/?ll=30.325498,59.918305&spn=0.0025,0.0025&l=map&pt=30.325498,59.918305,pm2dgl
+# POST  - аналог CREATE
+# PUT - аналог UPDATE

@@ -1,0 +1,11 @@
+h1 {
+color: #800000;
+}
+
+ul li {
+color: green;
+}
+
+ul {
+backgroup-image: url("../images/flag.jpg");
+}
