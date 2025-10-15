@@ -1,30 +1,14 @@
-<!--DOM - Document Ob-->
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="ru">-->
-<!--<head>-->
-<!--    как будет отображаться на странице-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Жанры</title>-->
-<!--    <link rel="stylesheet" href="{url_for('static', filename="css/styles.css")}">-->
-<!--</head>-->
-<!--<body>-->
-<!--что будет отображаться на странице-->
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<!--    как будет отображаться на странице-->
     <meta charset="UTF-8">
-    <meta name="description" content="Описание страницы сайта.">
-    <link rel="stylesheet" href="{url_for('static', filename='css/styles.css')}">
-    <title>Приветствуем тебя, {name}</title>
+    <title>{{ title }}</title>
 </head>
 <body>
-<!--    что будет отображаться на странице-->
-<h1>{name.capitalize()}, мы приветствуем тебя</h1>
+    <h1>Привет, я отрендеренный шаблон!</h1>
+    <p>Здороваюсь с пользователем по имени {{ user }}.</p>
+    <p>Для регистрации заполните <a href="/form-sample">форму</a>.</p>
+    <p>Пример <a href="/conditions-sample/2">условий</a> в шаблонах Jinja.</p>
+    <p>Приветствуем тебя, <a href="/greet"></a>.</p>
 </body>
 </html>
-    """
