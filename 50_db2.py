@@ -6,7 +6,7 @@
 # json.loads() - json как строка
 import json
 
-with open('data/pets.json', 'rt', encoding='utf-8') as f:
+with open('old/data/pets.json', 'rt', encoding='utf-8') as f:
     data = json.load(f)
 
     # Если объект один (один условный словарь)

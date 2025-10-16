@@ -8,12 +8,12 @@ import random
 a = [random.randint(1, 100) for _ in range(10)]
 
 # Записываем в файл
-f = open('files/list.txt', 'w')
+f = open('../files/list.txt', 'w')
 print(*a, sep=', ', file=f)  # печатаем в файл
 f.close()
 
 # Читаем из файла
-f = open('files/list.txt')  # чтение по умолчанию
+f = open('../files/list.txt')  # чтение по умолчанию
 text = f.read()  # читаем всё из файла, знаем, что там одна строка
 a = [int(x) for x in text.split(', ') if int(x) % 2 == 0]
 a.sort()

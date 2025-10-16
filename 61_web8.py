@@ -1,9 +1,16 @@
 # Web-приложение
-# Flask - работаем с Jinja
+# Flask -SQLAlchemy - (ORM)
+
+# from flask import Flask, url_for, request, render_template
+
+import sqlalchemy as sa
 from flask import Flask, url_for, request, render_template
 import sqlite3
 
+from loginform import LoginForm
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'just_simple_key'
 
 
 @app.route('/')  # декоратор
@@ -19,25 +26,35 @@ def index():
     # title='Пример рендеринга')
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        return 'Успех'
+    return render_template('login.html',
+                           title='Авторизация',
+                           f=form)
+
+
 @app.route('/conditions-sample/<int:number>')
 def even_odd(number):
     return render_template('even_odd.html',
                            number=number,
                            title='Чётное или нечётное')
 
+
 @app.route('/about')  # декоратор
 def about():
-    return """Это страница с более подробной информацией.
-    <br>А <a href="/genres">тут</a> про жанры.
-    <br>А <a href="/flag">тут</a> будет флаг.
-    <br><a href="/home">Назад</a>"""
+    return render_template('about.html', title='Про нас')
 
 
 @app.route('/countdown')
 def cdown():
     lst = [str(x) for x in reversed(range(11))]
     lst.append('Поехали!!!')
-    return '<br>'.join(lst)
+    return render_template('countdown.html',
+                           title='Обратный отсчёт',
+                           array=lst)
 
 
 @app.route('/genres')
@@ -50,32 +67,14 @@ def genres():
     con.close()
     for _, name in res:
         temp.append(name)
-    temp = list(map(lambda x: '<li>' + x + '</li>', temp))
-    res = '<br>'.join(temp)
-    result = f"""
-    <!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{url_for('static', filename='css/styles.css')}">
-    <title>Жанры</title>
-</head>
-<body>
-<h1>А вот и жанры:</h1>
-<ul>
-{res}
-</ul>
-</body>
-</html>
-    """
-    return result
+    return render_template('genres.html',
+                           title='Жанры',
+                           array=temp)
 
 
 @app.route('/flag')
 def flag():
-    return f"""<img src="{url_for('static', filename='images/flag.jpg')}" 
-    height="40" width="60" 
-    alt="Нету флага">"""
+    return render_template('flag.html', title='Флаг')
 
 
 # <name> - строка
@@ -83,33 +82,14 @@ def flag():
 # <num:float> - дес. дробь
 @app.route('/greet', defaults={'name': None})
 @app.route('/greet/<name>')
-# @app.route('/greet')
 def greeting(name=None):
     if name is None:
-        return '<h1>Не с кем здороваться!!!</h1>'
+        return render_template('greet.html',
+                               title='Приветствие',
+                               text='Не с кем здороваться!!!')
     return render_template('greet.html',
-                           name=name,
-                           title='мы приветствуем тебя')
-# @app.route('/conditions-sample/<int:number>')
-# def even_odd(number):
-#     return render_template('even_odd.html',
-#                            number=number,
-#                            title='Чётное или нечётное')
-#     return f"""
-#     <!DOCTYPE html>
-# <html lang="ru">
-# <head>
-# <!--    как будет отображаться на странице-->
-#     <meta charset="UTF-8">
-#     <meta name="description" content="Описание страницы сайта.">
-#     <link rel="stylesheet" href="{url_for('static', filename='css/styles.css')}">
-#     <title>Приветствуем тебя, {name}</title>
-# </head>
-# <body>
-# <h1>{name.capitalize()}, мы приветствуем тебя</h1>
-# </body>
-# </html>
-#     """
+                           title=f'Приветствуем, {name.capitalize()}!',
+                           text=f'{name.capitalize()}, мы приветствуем тебя')
 
 
 @app.route('/form-sample', methods=['GET', 'POST'])
@@ -133,5 +113,22 @@ def form_sample():
                                email=m, password=password,
                                gender=gender, about=ab, status=st)
 
+
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000)
+    db_session.global_init('db/blogs.db')
+    # app.run(host='127.0.0.1', port=5000)
+    # user = User()
+    # user.name = 'Bill'
+    # user.about = 'Bill from CA'
+    # user.mail = 'tom@email.com'
+    db_sess = db_session.create_session()
+    # user = db_sess.query(User).first()
+    # db_sess.add(user)
+    # db_sess.commit(user)
+    # user = db_sess.query(User).filter(User.name != 'Bill' | User.id > 1) # or - или
+    # user = db_sess.query(User).filter(User.name != 'Bill' , User.id > 1) # and - и
+    # for user in users:
+    #     print(f'Пользователь {user.name} с {user.email}.')
+    bill = db_session.create_session
+
+

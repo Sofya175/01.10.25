@@ -8,12 +8,12 @@ d = {
     'стул': 'chair'
 }
 
-f = open('./files/info.txt', 'wt', encoding='utf-8')  # файловый объект
+f = open('../files/info.txt', 'wt', encoding='utf-8')  # файловый объект
 
 for k, v in d.items():
     print(f'{k} : {v}', file=f)
 
-f = open('./files/info.txt', 'rt', encoding='utf-8')
+f = open('../files/info.txt', 'rt', encoding='utf-8')
 
 while line := f.readline().strip():
     print(line)

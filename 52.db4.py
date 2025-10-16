@@ -5,7 +5,7 @@
 from zipfile import ZipFile
 import os
 
-os.chdir('data')
+os.chdir('old/data')
 file_list = os.listdir()
 with ZipFile('jsons.zip', 'w') as myzip:
     for file in file_list:
@@ -13,7 +13,7 @@ with ZipFile('jsons.zip', 'w') as myzip:
 #         os.remove(file)
 # os.chdir('..')
 
-with ZipFile('data/jsons.zip') as z:
+with ZipFile('old/data/jsons.zip') as z:
     print(z.namelist())
     # z.extract() - конкретно какой файл
     # z.extractall('куда')

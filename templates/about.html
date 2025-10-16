@@ -10,22 +10,19 @@
 <!--</head>-->
 
 <!--<body>-->
-<!--<h1>{{title}}</h1>-->
-<!--<p class="centered">А вот и флаг:<br>-->
-<!--<img src="{{url_for('static', filename='images/flag.jpg')}}"-->
-<!--    height="80" width="120"-->
-<!--    alt="Нету флага">-->
-<!--</p>-->
+<!--<h1>Информация про нас!</h1>-->
+<!--<p>Это страница с более подробной информацией.-->
+<!--<br>А <a href="/genres">тут</a> про жанры.-->
+<!--<br>А <a href="/flag">тут</a> будет флаг.-->
+<!--<br><a href="/home">Назад</a></p>-->
 <!--</body>-->
 <!--</html>-->
-
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{title}}</h1>
-<p class="centered">А вот и флаг:<br>
-<img src="{{url_for('static', filename='images/flag.jpg')}}"
-    height="80" width="120"
-    alt="Нету флага">
-</p>
+<h1>Информация про нас!</h1>
+<p>Это страница с более подробной информацией.
+<br>А <a href="/genres">тут</a> про жанры.
+<br>А <a href="/flag">тут</a> будет флаг.
+<br><a href="/home">Назад</a></p>
 {% endblock %}
