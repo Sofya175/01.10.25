@@ -14,7 +14,7 @@
 # Создание таблиц Excel
 import xlsxwriter
 
-workbook = xlsxwriter.Workbook('../excel/list.xlsx')
+workbook = xlsxwriter.Workbook('excel/list.xlsx')
 worksheet = workbook.add_worksheet('Список затрат')
 
 data = [

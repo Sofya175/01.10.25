@@ -1,5 +1,5 @@
 # Реализация класса Car
-from oop3 import Car
+from old.oop3 import Car
 
 def main():
     car1 = Car('Lada', 'Kalina')

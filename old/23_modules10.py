@@ -6,7 +6,7 @@
 from openpyxl import load_workbook
 
 # Загрузка рабочей книги (файл)
-wb = load_workbook('../excel/list.xlsx')
+wb = load_workbook('excel/list.xlsx')
 sheet = wb.active
 
 # Читаем все строки

@@ -6,7 +6,7 @@
 from docxtpl import DocxTemplate
 import datetime as dt
 
-document = DocxTemplate('../word/tpl.docx')
+document = DocxTemplate('word/tpl.docx')
 
 content = {
     'name': 'Семён Семёнович',

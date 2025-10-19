@@ -7,7 +7,7 @@
 import sqlite3
 
 # Подключиться к БД
-con = sqlite3.connect('db/books_bd.sqlite')
+con = sqlite3.connect('../db/books_bd.sqlite')
 
 # Создание курсора
 cur = con.cursor()

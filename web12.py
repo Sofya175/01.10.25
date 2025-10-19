@@ -1,15 +1,30 @@
 # Web-приложение
 # Flask - SQLAlchemy - Object Relational Mapping (ORM)
-# Объектно-реляционное отображение
+# Объектно-реляционное отображение (авторизация)
+import datetime
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 import sqlite3
 from data import db_session
+from data.news import News
 from data.users import User
 from forms.loginform import LoginForm
+from forms.user import RegisterForm
+from flask_login import LoginManager, login_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'just_simple_key'
+# Время жизни сессий для данного приложения
+app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
 
 
 @app.route('/')  # декоратор
@@ -25,11 +40,82 @@ def index():
     # title='Пример рендеринга')
 
 
+# @app.route('/cookie_test')
+# def cookie():
+#     visit_count = int(request.cookies.get('visit_count', 0))
+#
+#     if visit_count:
+#         res = make_response(
+#             f'Вы посетили данную страницу {visit_count + 1} раз'
+#         )
+#         res.set_cookie('visit_count', str(visit_count + 1),
+#                        max_age=60 * 60 * 24 * 365)  # установил cookie на 1 год
+#
+#     else:
+#         res = make_response('Вы пришли на эту страницу 1 раз за последний год')
+#         res.set_cookie('visit_count', '1',
+#                        max_age=60 * 60 * 24 * 365)
+#     return res
+
+# @app.route('/session_test')
+# def sess_test():
+#     visit_count = session.get('visit_count', 0)
+#
+#     session['visit_count'] = visit_count + 1
+#     return make_response(
+#         f'Вы посетили данную страницу {visit_count + 1} раз.'
+#     )
+
+
+@app.route('/news')
+def all_news():
+    db_sess = db_session.create_session()
+    # Выведем все публичные новости
+    all_news = db_sess.query(News).filter(News.is_private != True).all()
+    return render_template('news.html',
+                           title='Список новостей',
+                           news=all_news)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():  # Это работает метод POST
+        if form.password.data != form.password_again.data:
+            return render_template('register.html',
+                                   title='Пароли не совпали',
+                                   message='Пароли не совпадают',
+                                   form=form)
+        db_sess = db_session.create_session()
+        if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('register.html',
+                                   title='Пользователь существует',
+                                   message='Такой пользователь уже есть в базе',
+                                   form=form)
+        user = User(
+            name=form.name.data,
+            email=form.email.data,
+            about=form.about.data
+        )
+        user.set_password(form.password.data)
+        db_sess.add(user)
+        db_sess.commit()
+        return redirect('/login')
+    # а если метод GET
+    return render_template('register.html',
+                           title='Регистрация',
+                           form=form)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        return 'Успех'
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect('/news')
     return render_template('login.html',
                            title='Авторизация',
                            f=form)
@@ -115,23 +201,4 @@ def form_sample():
 
 if __name__ == '__main__':
     db_session.global_init('db/blogs.db')
-    # app.run(host='127.0.0.1', port=5000)
-    # user = User()
-    # user.name = 'Tom'
-    # user.about = 'Tom from VG'
-    # user.email = 'tom@email.com'
-    db_sess = db_session.create_session()
-    bill = db_sess.query(User).filter(User.name == 'Билли')
-
-    if bill:
-        bill.delete()
-        db_sess.commit()
-    # if bill:
-    #     bill.name = 'Билли'
-    #     bill.created_date = datetime.datetime.now()
-    #     db_sess.commit()
-    # users = db_sess.query(User).filter((User.name != 'Bill') | (User.id > 1))
-    # db_sess.add(user)
-    # db_sess.commit()
-    # for user in users:
-    #    print(f'Пользователь {user.name} c {user.email}.')
+    app.run(host='127.0.0.1', port=5000)

@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route('/home')
 def index():
     params = {
-        'user': 'слушатель от ИПАПF',
+        'user': 'слушатель от ИПАП',
         'title': 'Пример рендеринга'
     }
     return render_template('index.html', **params)

@@ -1,6 +1,8 @@
 # Web-приложение
-# Flask - работаем с Jinja
-from flask import Flask, url_for, request, render_template
+# Flask - минимализм, с возможностью расширения
+# устанавливаем pip install flask
+# Django - всё включено (не используем)
+from flask import Flask, url_for
 import sqlite3
 
 app = Flask(__name__)
@@ -9,21 +11,10 @@ app = Flask(__name__)
 @app.route('/')  # декоратор
 @app.route('/home')
 def index():
-    params = {
-        'user': 'слушатель от ИПАПF',
-        'title': 'Пример рендеринга'
-    }
-    return render_template('index.html', **params)
-    # return render_template('index.html',
-    # user='слушатель от ИПАП',
-    # title='Пример рендеринга')
+    return """Я Ваше первое приложение.
+    <br>Подробнее <a href="/about">здесь</a>
+    <br>А вот <a href="/countdown">тут</a> обратный отсчёт"""
 
-
-@app.route('/conditions-sample/<int:number>')
-def even_odd(number):
-    return render_template('even_odd.html',
-                           number=number,
-                           title='Чётное или нечётное')
 
 @app.route('/about')  # декоратор
 def about():
@@ -102,27 +93,6 @@ def greeting(name=None):
 </html>
     """
 
-
-@app.route('/form-sample', methods=['GET', 'POST'])
-def form_sample():
-    if request.method == 'GET':
-        return render_template('form_sample.html',
-                               form_title='Форма для регистрации')
-    elif request.method == 'POST':
-        m = request.form.get('email')
-        password = request.form.get('password')
-        genderSelect = request.form.get('genderSelect')
-        gender = 'мужской' if genderSelect == 'М' else 'женский'
-        ab = request.form.get('about')
-        remember = request.form.get('remember')
-        if remember == 'on':
-            st = 'запомнить'
-        else:
-            st = 'не запоминать'
-        return render_template('result.html',
-                               title='Результат отправки',
-                               email=m, password=password,
-                               gender=gender, about=ab, status=st)
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)

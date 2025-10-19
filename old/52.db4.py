@@ -5,7 +5,7 @@
 from zipfile import ZipFile
 import os
 
-os.chdir('old/data')
+os.chdir('data')
 file_list = os.listdir()
 with ZipFile('jsons.zip', 'w') as myzip:
     for file in file_list:

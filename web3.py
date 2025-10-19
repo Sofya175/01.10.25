@@ -1,5 +1,5 @@
 # Web-приложение
-# Flask - работаем с Jinja
+# Flask - работаем с шаблонами
 from flask import Flask, url_for, request, render_template
 import sqlite3
 
@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route('/home')
 def index():
     params = {
-        'user': 'слушатель от ИПАПF',
+        'user': 'слушатель от ИПАП',
         'title': 'Пример рендеринга'
     }
     return render_template('index.html', **params)
@@ -18,12 +18,6 @@ def index():
     # user='слушатель от ИПАП',
     # title='Пример рендеринга')
 
-
-@app.route('/conditions-sample/<int:number>')
-def even_odd(number):
-    return render_template('even_odd.html',
-                           number=number,
-                           title='Чётное или нечётное')
 
 @app.route('/about')  # декоратор
 def about():

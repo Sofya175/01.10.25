@@ -1,13 +1,8 @@
-# Web-приложение
-# Flask -SQLAlchemy - (ORM)
-
-# from flask import Flask, url_for, request, render_template
-
 import sqlalchemy as sa
-from
+import sqlalchemy.orm as orm
 from sqlalchemy.orm import Session
 
-sqlalchemyBase = orm.declarative_base()
+SqlAlchemyBase = orm.declarative_base()
 
 __factory = None
 
@@ -19,4 +14,20 @@ def global_init(db_file):
         return
 
     if not db_file or not db_file.strip():
-        raise Excep
+        raise Exception('Необходимо указать корректный файл БД')
+
+    # Созданное подключение будет использоваться несколькими потоками
+    conn_str = f'sqlite:///{db_file.strip()}?check_same_thread=False'
+    print(f'Подключились к БД {conn_str}')
+
+    engine = sa.create_engine(conn_str, echo=False)
+    __factory = orm.sessionmaker(bind=engine)
+
+    from . import all_models
+
+    SqlAlchemyBase.metadata.create_all(engine)
+
+
+def create_session() -> Session:
+    global __factory
+    return __factory()

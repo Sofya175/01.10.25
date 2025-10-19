@@ -17,5 +17,5 @@ cats = {
     },
 }
 
-with open('old/data/cats.json', 'wt', encoding='utf-8') as cat_file:
+with open('data/cats.json', 'wt', encoding='utf-8') as cat_file:
     json.dump(cats, cat_file, indent=2, ensure_ascii=False)

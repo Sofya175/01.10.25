@@ -1,12 +1,14 @@
 # Web-приложение
 # Flask - SQLAlchemy - Object Relational Mapping (ORM)
-# Объектно-реляционное отображение
+# Объектно-реляционное отображение (регистрация пользователя)
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 import sqlite3
 from data import db_session
+from data.news import News
 from data.users import User
 from forms.loginform import LoginForm
+from forms.user import RegisterForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'just_simple_key'
@@ -23,6 +25,46 @@ def index():
     # return render_template('index.html',
     # user='слушатель от ИПАП',
     # title='Пример рендеринга')
+
+
+@app.route('/news')
+def all_news():
+    db_sess = db_session.create_session()
+    # Выведем все публичные новости
+    all_news = db_sess.query(News).filter(News.is_private != True).all()
+    return render_template('news.html',
+                           title='Список новостей',
+                           news=all_news)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():  # Это работает метод POST
+        if form.password.data != form.password_again.data:
+            return render_template('register.html',
+                                   title='Пароли не совпали',
+                                   message='Пароли не совпадают',
+                                   form=form)
+        db_sess = db_session.create_session()
+        if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('register.html',
+                                   title='Пользователь существует',
+                                   message='Такой пользователь уже есть в базе',
+                                   form=form)
+        user = User(
+            name=form.name.data,
+            email=form.email.data,
+            about=form.about.data
+        )
+        user.set_password(form.password.data)
+        db_sess.add(user)
+        db_sess.commit()
+        return redirect('/login')
+    # а если метод GET
+    return render_template('register.html',
+                           title='Регистрация',
+                           form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -115,23 +157,4 @@ def form_sample():
 
 if __name__ == '__main__':
     db_session.global_init('db/blogs.db')
-    # app.run(host='127.0.0.1', port=5000)
-    # user = User()
-    # user.name = 'Tom'
-    # user.about = 'Tom from VG'
-    # user.email = 'tom@email.com'
-    db_sess = db_session.create_session()
-    bill = db_sess.query(User).filter(User.name == 'Билли')
-
-    if bill:
-        bill.delete()
-        db_sess.commit()
-    # if bill:
-    #     bill.name = 'Билли'
-    #     bill.created_date = datetime.datetime.now()
-    #     db_sess.commit()
-    # users = db_sess.query(User).filter((User.name != 'Bill') | (User.id > 1))
-    # db_sess.add(user)
-    # db_sess.commit()
-    # for user in users:
-    #    print(f'Пользователь {user.name} c {user.email}.')
+    app.run(host='127.0.0.1', port=5000)
