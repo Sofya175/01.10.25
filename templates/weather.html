@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Информация о погоде в интересующем нас городе!</h1>
+<form method="post" class="login-form" novalidate>
+    {% if message %}
+        {{message}}
+    {% endif %}
+
+</form>
+{% endblock %}
