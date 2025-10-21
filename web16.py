@@ -1,12 +1,31 @@
 # Web-приложение
-# SOA 
+# SOA - Service Oriented Architecture
+# MSA - Micro Service Architecture
+# REST - REpresentational State Transfer
+# На примере новостей:
+# Все новости GET (/news)
+# Новость номер 3 GET (/news/3)
+# Создать новость POST (/news + JSON)
+# {
+#     "title": "Заголовок",
+#     "content": 'Содержание',
+#     "is_private": 1,
+#     "user_id": 2
+# }
+# Изменить новость №3 PUT (/news/3 + JSON)
+# Удалить новость №4 DELETE (/news/4)
+
 import datetime
 
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, abort
 import sqlite3
+
+import news_api
 from data import db_session
 from data.news import News
 from data.users import User
+import requests as r
+from news_api import blueprint
 from forms.loginform import LoginForm
 from forms.news import NewsForm
 from forms.town import TownForm
@@ -47,6 +66,7 @@ def index():
     # user='слушатель от ИПАП',
     # title='Пример рендеринга')
 
+
 @app.route('/weather', methods=['GET', 'POST'])
 def weather():
     form = TownForm()
@@ -55,13 +75,25 @@ def weather():
         if town:
             params = {
                 'q': town,
-                'lang: 'ru',
+                'lang': 'ru',
                 'units': 'metric',
                 'appid': 'a45e3714b3a146027e1355b57db43a69'
             }
-
+            temp = r.get('https://api.openweathermap.org/data/2.5/weather',
+                         params=params)
+            res = temp.json()
+            if res['cod'] == 200:
+                result = {'title': f'Погода в городе {town}', 'temper': res['main']['temp'],
+                          'humidity': res['main']['humidity'], 'pressure': res['main']['pressure']}
+                return render_template('get_weather.html', **result)
+            else:
+                return render_template('get_weather.html',
+                                       title='Город не найден')
+        else:
+            abort(404)
     return render_template('weather.html',
                            title='Погода', form=form)
+
 
 @app.route('/news')
 def all_news():
@@ -78,7 +110,44 @@ def all_news():
                            news=all_news)
 
 
+@app.route('/news/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_news(id):
+    form = NewsForm()
+    if request.method == 'GET':
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(
+            News.id == id,
+            News.user == current_user
+        ).first()
+        if news:
+            form.title.data = news.title
+            form.content.data = news.content
+            form.is_private.data = news.is_private
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(
+            News.id == id,
+            News.user == current_user
+        ).first()
+        if news:
+            news.title = form.title.data
+            news.content = form.content.data
+            news.is_private = form.is_private.data
+            news.created_date = datetime.datetime.now()
+            db_sess.commit()
+            return redirect('/news')
+        else:
+            abort(404)
+    return render_template('add_news.html',
+                           title='Редактирование новости',
+                           form=form)
+
+
 @app.route('/add_news', methods=['GET', 'POST'])
+@login_required
 def add_news():
     form = NewsForm()
     if form.validate_on_submit():
@@ -93,6 +162,22 @@ def add_news():
         return redirect('/news')
     return render_template("add_news.html",
                            title="Добавление новости", form=form)
+
+
+@app.route('/news_del/<int:id>')
+@login_required
+def news_delete(id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(
+        News.id == id,
+        News.user == current_user
+    ).first()
+    if news:
+        db_sess.delete(news)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/news')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -226,4 +311,5 @@ def form_sample():
 
 if __name__ == '__main__':
     db_session.global_init('db/blogs.db')
+    # app.register_blueprint(blueprint)  # зарегистрировали Blueprint
     app.run(host='127.0.0.1', port=5000)

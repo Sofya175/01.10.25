@@ -265,4 +265,3 @@ def form_sample():
 if __name__ == '__main__':
     db_session.global_init('db/blogs.db')
     app.run(host='127.0.0.1', port=5000)
-

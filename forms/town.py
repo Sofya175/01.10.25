@@ -1,18 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length
 
 
 class TownForm(FlaskForm):
-    title = StringField('Город',
-                        validators=[
-                            DataRequired('Введите заголовок'),
-                            Length(min=3, max=50,
-                                   message='Заголовок должен быть не менее 3 и не более 50 символов ')])
-    content = TextAreaField('Содержание:',
-                          validators=[
-                              DataRequired('Введите текст новости'),
-                              Length(min=3, max=250,
-                                     message='Текст новости должен быть не менее 3 и не более 250 символов ')])
-    is_private = BooleanField('Личное')
-    submit = SubmitField('Применить')
+    town = StringField('Город:',
+                       validators=[
+                           DataRequired('Нужно ввести название города'),
+                           Length(min=3, max=50,
+                                  message='Название должно быть не менее 3 и не более 50 символов ')])
+    submit = SubmitField('Получить')

@@ -1,6 +1,6 @@
 # Web-приложение
 # Flask - SQLAlchemy - Object Relational Mapping (ORM)
-# Объектно-реляционное отображение (авторизация)
+# Объектно-реляционное отображение (разграничение доступа)
 import datetime
 
 from flask import Flask, request, render_template, redirect
@@ -9,8 +9,10 @@ from data import db_session
 from data.news import News
 from data.users import User
 from forms.loginform import LoginForm
+from forms.news import NewsForm
 from forms.user import RegisterForm
-from flask_login import LoginManager, login_user
+from flask_login import (LoginManager, login_user, logout_user,
+                         login_required, current_user)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'just_simple_key'
@@ -24,15 +26,17 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
-    return db_sess.query(User).get(user_id)
+    return db_sess.get(User, user_id)
+
 
 @app.errorhandler(401)
-def unauhtrized(error):
-
+def unauthorized(error):
+    return redirect('/login')
 
 
 @app.route('/')  # декоратор
 @app.route('/home')
+@login_required
 def index():
     params = {
         'user': 'слушатель от ИПАП',
@@ -44,41 +48,36 @@ def index():
     # title='Пример рендеринга')
 
 
-# @app.route('/cookie_test')
-# def cookie():
-#     visit_count = int(request.cookies.get('visit_count', 0))
-#
-#     if visit_count:
-#         res = make_response(
-#             f'Вы посетили данную страницу {visit_count + 1} раз'
-#         )
-#         res.set_cookie('visit_count', str(visit_count + 1),
-#                        max_age=60 * 60 * 24 * 365)  # установил cookie на 1 год
-#
-#     else:
-#         res = make_response('Вы пришли на эту страницу 1 раз за последний год')
-#         res.set_cookie('visit_count', '1',
-#                        max_age=60 * 60 * 24 * 365)
-#     return res
-
-# @app.route('/session_test')
-# def sess_test():
-#     visit_count = session.get('visit_count', 0)
-#
-#     session['visit_count'] = visit_count + 1
-#     return make_response(
-#         f'Вы посетили данную страницу {visit_count + 1} раз.'
-#     )
-
-
 @app.route('/news')
 def all_news():
     db_sess = db_session.create_session()
-    # Выведем все публичные новости
-    all_news = db_sess.query(News).filter(News.is_private != True).all()
+    # Выведем либо все публичные новости, либо все новости для автора
+    if current_user.is_authenticated:
+        all_news = db_sess.query(News).filter(
+            (News.user == current_user) | (News.is_private != True)).all()
+    else:
+        all_news = db_sess.query(News).filter(
+            News.is_private != True).all()
     return render_template('news.html',
                            title='Список новостей',
                            news=all_news)
+
+
+@app.route('/add_news', methods=['GET', 'POST'])
+def add_news():
+    form = NewsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = News()
+        news.title = form.title.data
+        news.content = form.content.data
+        news.is_private = form.is_private.data
+        current_user.news.append(news)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/news')
+    return render_template("add_news.html",
+                           title="Добавление новости", form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -123,6 +122,13 @@ def login():
     return render_template('login.html',
                            title='Авторизация',
                            f=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/home')
 
 
 @app.route('/conditions-sample/<int:number>')
