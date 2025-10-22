@@ -1,12 +1,11 @@
 # Web-приложение
-# Flask - SQLAlchemy - Object Relational Mapping (ORM)
-# Объектно-реляционное отображение
+# Flask - работаем с Jinja (базовые шаблоны)
+from time import sleep
 
-from flask import Flask, request, render_template
+from flask import Flask, url_for, request, render_template
 import sqlite3
-from data import db_session
-from data.users import User
-from forms.loginform import LoginForm
+
+from loginform import LoginForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'just_simple_key'
@@ -59,7 +58,7 @@ def cdown():
 @app.route('/genres')
 def genres():
     temp = []
-    con = sqlite3.connect('db/books_bd.sqlite')
+    con = sqlite3.connect('../db/books_bd.sqlite')
     cur = con.cursor()
     res = cur.execute("SELECT * FROM genres").fetchall()
     cur.close()
@@ -114,24 +113,4 @@ def form_sample():
 
 
 if __name__ == '__main__':
-    db_session.global_init('db/blogs.db')
-    # app.run(host='127.0.0.1', port=5000)
-    # user = User()
-    # user.name = 'Tom'
-    # user.about = 'Tom from VG'
-    # user.email = 'tom@email.com'
-    db_sess = db_session.create_session()
-    bill = db_sess.query(User).filter(User.name == 'Билли')
-
-    if bill:
-        bill.delete()
-        db_sess.commit()
-    # if bill:
-    #     bill.name = 'Билли'
-    #     bill.created_date = datetime.datetime.now()
-    #     db_sess.commit()
-    # users = db_sess.query(User).filter((User.name != 'Bill') | (User.id > 1))
-    # db_sess.add(user)
-    # db_sess.commit()
-    # for user in users:
-    #    print(f'Пользователь {user.name} c {user.email}.')
+    app.run(host='127.0.0.1', port=5000)

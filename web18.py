@@ -15,15 +15,23 @@
 # Изменить новость №3 PUT (/news/3 + JSON)
 # Удалить новость №4 DELETE (/news/4)
 
-import datetime
 
-from flask import Flask, request, render_template, redirect, abort
+
+import datetime
+import os
+
+from dotenv import load_dotenv
+from flask import (Flask, request, render_template,
+                   redirect, abort, make_response, jsonify)
 import sqlite3
 
+from dotenv import loand_dotenv
+from Flask_mail import Mail, Messadge
 from data import db_session
 from data.news import News
 from data.users import User
 import requests as r
+from data.news_api import blueprint
 from forms.loginform import LoginForm
 from forms.news import NewsForm
 from forms.town import TownForm
@@ -31,10 +39,41 @@ from forms.user import RegisterForm
 from flask_login import (LoginManager, login_user, logout_user,
                          login_required, current_user)
 
+# через Web
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'just_simple_key'
 # Время жизни сессий для данного приложения
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
+
+# Конфигурация для почты
+app.config.update(
+    MAIL_SERVER=os.environ.get('HOST'),
+    MAIL_PORT=os.environ.get('PORT'),
+    MAIL_USE_TLS=True,
+    MAIL_USERNAME=False,
+    MAIL_PASSWORD=os.environ.get('PASSWORD'),
+    MAIL_DEFAULT_SENDER=os.environ.get('FROM')
+)
+
+mail = Mail(app)
+
+def send_mail(subject, massadge, recipient):
+    if not app.config.get('MAIL_SERVER') or not app.config.get('MAIL_PASSWORD'):
+        return 'Почта не настроена'
+
+    try:
+        recipient = recipient or ['zueva-sv@mail.ru']
+
+        msg = Message(
+            subject=subject,
+            sender=app.config.get('MAIL_DEFAULT_SENDER', 'noreply@nodomen.ru'),
+            recipients= recipient)
+
+msg.body = massage
+mail.send(msg) # отравка
+return
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -51,18 +90,31 @@ def unauthorized(error):
     return redirect('/login')
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Новость не найдена'}), 404)
+
+
+@app.errorhandler(400)
+def not_found(_):
+    return make_response(jsonify({'error': 'Некорректный запрос'}), 400)
+
+
 @app.route('/')  # декоратор
 @app.route('/home')
 @login_required
 def index():
     params = {
         'user': 'слушатель от ИПАП',
-        'title': 'Пример рендеринга'
+        'title': 'Пример рендеринга',
+        'active_page':
     }
     return render_template('index.html', **params)
     # return render_template('index.html',
     # user='слушатель от ИПАП',
     # title='Пример рендеринга')
+
+@app.route('/contacts', methods=['GET', 'POST'])
 
 
 @app.route('/weather', methods=['GET', 'POST'])
@@ -75,7 +127,7 @@ def weather():
                 'q': town,
                 'lang': 'ru',
                 'units': 'metric',
-                'appid': 'a45e3714b3a146027e1355b57db43a69'
+                'appid': 'Ваш ключ'
             }
             temp = r.get('https://api.openweathermap.org/data/2.5/weather',
                          params=params)
@@ -92,20 +144,14 @@ def weather():
     return render_template('weather.html',
                            title='Погода', form=form)
 
+# Через API (все новости, без ограничений)
 
 @app.route('/news')
 def all_news():
-    db_sess = db_session.create_session()
-    # Выведем либо все публичные новости, либо все новости для автора
-    if current_user.is_authenticated:
-        all_news = db_sess.query(News).filter(
-            (News.user == current_user) | (News.is_private != True)).all()
-    else:
-        all_news = db_sess.query(News).filter(
-            News.is_private != True).all()
-    return render_template('news.html',
-                           title='Список новостей',
-                           news=all_news)
+    news = r.get('http://127.0.0.1:5000/api/news').json()
+    return render_template('news_api.html',
+                           title='Новости через API',
+                           news=news['news'], active_page=news)
 
 
 @app.route('/news/<int:id>', methods=['GET', 'POST'])
@@ -309,5 +355,5 @@ def form_sample():
 
 if __name__ == '__main__':
     db_session.global_init('db/blogs.db')
-    # app.register_blueprint(blueprint)  # зарегистрировали Blueprint
-    app.run(host='127.0.0.1', port=5000)
+    app.register_blueprint(blueprint)  # зарегистрировали Blueprint
+    app.run(host='127.0.0.1', port=5000, debag=True)

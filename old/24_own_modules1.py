@@ -4,7 +4,7 @@
 
 # import lib
 # import lib import summ
-from lib import summ, diff, mul, div
+from old.lib import summ, diff, mul, div
 
 
 def main():

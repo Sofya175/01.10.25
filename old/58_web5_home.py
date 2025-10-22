@@ -51,7 +51,7 @@ def cdown():
 @app.route('/genres')
 def genres():
     temp = []
-    con = sqlite3.connect('db/books_bd.sqlite')
+    con = sqlite3.connect('../db/books_bd.sqlite')
     cur = con.cursor()
     res = cur.execute("SELECT * FROM genres").fetchall()
     cur.close()

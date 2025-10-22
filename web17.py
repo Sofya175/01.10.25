@@ -17,13 +17,15 @@
 
 import datetime
 
-from flask import Flask, request, render_template, redirect, abort
+from flask import (Flask, request, render_template,
+                   redirect, abort, make_response, jsonify)
 import sqlite3
 
 from data import db_session
 from data.news import News
 from data.users import User
 import requests as r
+from data.news_api import blueprint
 from forms.loginform import LoginForm
 from forms.news import NewsForm
 from forms.town import TownForm
@@ -51,6 +53,16 @@ def unauthorized(error):
     return redirect('/login')
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Новость не найдена'}), 404)
+
+
+@app.errorhandler(400)
+def not_found(_):
+    return make_response(jsonify({'error': 'Некорректный запрос'}), 400)
+
+
 @app.route('/')  # декоратор
 @app.route('/home')
 @login_required
@@ -75,7 +87,7 @@ def weather():
                 'q': town,
                 'lang': 'ru',
                 'units': 'metric',
-                'appid': 'a45e3714b3a146027e1355b57db43a69'
+                'appid': 'Ваш ключ'
             }
             temp = r.get('https://api.openweathermap.org/data/2.5/weather',
                          params=params)
@@ -309,5 +321,5 @@ def form_sample():
 
 if __name__ == '__main__':
     db_session.global_init('db/blogs.db')
-    # app.register_blueprint(blueprint)  # зарегистрировали Blueprint
+    app.register_blueprint(blueprint)  # зарегистрировали Blueprint
     app.run(host='127.0.0.1', port=5000)

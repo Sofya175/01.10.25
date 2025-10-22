@@ -1,5 +1,5 @@
 # Web-приложение
-# Flask - работаем с Jinja
+# Flask - работаем с шаблонами
 from flask import Flask, url_for, request, render_template
 import sqlite3
 
@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route('/home')
 def index():
     params = {
-        'user': 'слушатель от ИПАПF',
+        'user': 'слушатель от ИПАП',
         'title': 'Пример рендеринга'
     }
     return render_template('index.html', **params)
@@ -18,12 +18,6 @@ def index():
     # user='слушатель от ИПАП',
     # title='Пример рендеринга')
 
-
-@app.route('/conditions-sample/<int:number>')
-def even_odd(number):
-    return render_template('even_odd.html',
-                           number=number,
-                           title='Чётное или нечётное')
 
 @app.route('/about')  # декоратор
 def about():
@@ -43,7 +37,7 @@ def cdown():
 @app.route('/genres')
 def genres():
     temp = []
-    con = sqlite3.connect('db/books_bd.sqlite')
+    con = sqlite3.connect('../db/books_bd.sqlite')
     cur = con.cursor()
     res = cur.execute("SELECT * FROM genres").fetchall()
     cur.close()
@@ -73,7 +67,7 @@ def genres():
 
 @app.route('/flag')
 def flag():
-    return f"""<img src="{url_for('static', filename='images/flag.jpg')}" 
+    return f"""<img src="{url_for('static', filename='../images/flag.jpg')}" 
     height="40" width="60" 
     alt="Нету флага">"""
 

@@ -32,7 +32,7 @@ def cdown():
 @app.route('/genres')
 def genres():
     temp = []
-    con = sqlite3.connect('db/books_bd.sqlite')
+    con = sqlite3.connect('../db/books_bd.sqlite')
     cur = con.cursor()
     res = cur.execute("SELECT * FROM genres").fetchall()
     cur.close()
@@ -62,7 +62,7 @@ def genres():
 
 @app.route('/flag')
 def flag():
-    return f"""<img src="{url_for('static', filename='images/flag.jpg')}" 
+    return f"""<img src="{url_for('static', filename='../images/flag.jpg')}" 
     height="40" width="60" 
     alt="Нету флага">"""
 
