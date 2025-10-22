@@ -21,13 +21,13 @@ class SmartDict:
     def save_dict(self):
         # Менеджер контекста (конструкция with ... as)
         # автоматически закрывает файл
-        with open('../files/dict.txt', 'wt', encoding='utf-8') as f:
+        with open('files/dict.txt', 'wt', encoding='utf-8') as f:
             for k, v in self._d.items():
                 print(f'{k} : {v}', file=f)
 
     def read_dict(self):
         self._d.clear()
-        with open('../files/dict.txt', 'rt', encoding='utf-8') as f:
+        with open('files/dict.txt', 'rt', encoding='utf-8') as f:
             while line := f.readline().strip():
                 k, v = line.split(' : ')
                 self._d[k] = v

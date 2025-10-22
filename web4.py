@@ -73,7 +73,7 @@ def genres():
 
 @app.route('/flag')
 def flag():
-    return f"""<img src="{url_for('static', filename='images/flag.jpg')}" 
+    return f"""<img src="{url_for('static', filename='old/images/flag.jpg')}" 
     height="40" width="60" 
     alt="Нету флага">"""
 

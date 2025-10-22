@@ -60,7 +60,7 @@ def weather():
                 'q': town,
                 'lang': 'ru',
                 'units': 'metric',
-                'appid': 'Ваш ключ'
+                'appid': 'a45e3714b3a146027e1355b57db43a69'
             }
             temp = r.get('https://api.openweathermap.org/data/2.5/weather',
                          params=params)

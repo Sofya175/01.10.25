@@ -4,7 +4,7 @@
 # pip install pillow
 from PIL import Image, ImageFilter
 
-image = Image.open('../images/Python.jpg')
+image = Image.open('images/Python.jpg')
 pixel = image.load()  # загрузить массив пикселей
 w, h = image.size
 

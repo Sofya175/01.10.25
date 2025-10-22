@@ -1,25 +1,10 @@
 # Web-приложение
-# SOA - Service Oriented Architecture
-# MSA - Micro Service Architecture
-# REST - REpresentational State Transfer
-# На примере новостей:
-# Все новости GET (/news)
-# Новость номер 3 GET (/news/3)
-# Создать новость POST (/news + JSON)
-# {
-#     "title": "Заголовок",
-#     "content": 'Содержание',
-#     "is_private": 1,
-#     "user_id": 2
-# }
-# Изменить новость №3 PUT (/news/3 + JSON)
-# Удалить новость №4 DELETE (/news/4)
-
+# Flask - SQLAlchemy - Object Relational Mapping (ORM)
+# Объектно-реляционное отображение (работаем с API, погода)
 import datetime
 
 from flask import Flask, request, render_template, redirect, abort
 import sqlite3
-
 from data import db_session
 from data.news import News
 from data.users import User
@@ -75,7 +60,7 @@ def weather():
                 'q': town,
                 'lang': 'ru',
                 'units': 'metric',
-                'appid': 'a45e3714b3a146027e1355b57db43a69'
+                'appid': 'Ваш ключ'
             }
             temp = r.get('https://api.openweathermap.org/data/2.5/weather',
                          params=params)
@@ -309,5 +294,4 @@ def form_sample():
 
 if __name__ == '__main__':
     db_session.global_init('db/blogs.db')
-    # app.register_blueprint(blueprint)  # зарегистрировали Blueprint
     app.run(host='127.0.0.1', port=5000)

@@ -76,7 +76,7 @@ def flag():
     #         height="40" width"60"
     #         alt=\"Нету флага\">"""
     # ИЛИ через: url_for - соединяет директорию с файлом
-    return f"""<img src="{url_for('static', filename='../images/flag.jpg')}"
+    return f"""<img src="{url_for('static', filename='images/flag.jpg')}"
             height="40" width"60"
             alt=\"Нету флага\">"""
 

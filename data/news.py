@@ -5,9 +5,7 @@ from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
 
 
-
-
-class News(SqlAlchemyBase):
+class News(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'news'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True,

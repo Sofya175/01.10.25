@@ -26,16 +26,16 @@ if os.path.exists(os.path.join(path, 'files', 'dict.txt')):
     print('Файл можно открывать на чтение')
 
 # или с явным указанием пути
-if os.path.exists('../files/dict.txt'):
+if os.path.exists('files/dict.txt'):
     print('Файл существует')
 
 # Смена директории
-os.chdir('../files')  # "входим" в files
+os.chdir('files')  # "входим" в files
 print(os.getcwd())
 os.chdir('../..')  # и выходим оттуда
 print(os.getcwd())
 # зайдём в images и распечатаем все файлы оттуда
-os.chdir('../images')
+os.chdir('images')
 file_list = os.listdir()  # текущая директория - по умолчанию
 # отфильтровали файлы, которы начинаются на pyth
 new_list = [f for f in file_list if f.startswith('pyth')]

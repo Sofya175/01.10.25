@@ -12,14 +12,14 @@
 <div class="row justify-content-md-center">
     <div class="col-md-9 border rounded">
         <div>
-            <h2>{{item.title}}</h2>
+            <h2>{{item['title']}}</h2>
         </div>
         <div>
-            <p>{{item.content}}</p>
+            <p>{{item['content']}}</p>
         </div>
         <div>
-            <b>Автор</b>: {{item.user.name}}<br>
-            <b>Дата публикации</b>: {{item.created_date.strftime('%d.%m.%Y в %H:%M.')}}
+            <b>Автор</b>: {{item['user']['name']}}<br>
+            <b>Дата публикации</b>: {{item['created_date']}}
         </div>
         {% if current_user.is_authenticated and current_user == item.user %}
         <div class="d-flex justify-content-end py-1">
